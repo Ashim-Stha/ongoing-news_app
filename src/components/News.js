@@ -59,20 +59,74 @@ export class News extends Component {
     console.log('hello');
     this.state = {
      articles : this.articles,
-     loading : false
+    //  loading : false
+    page: 1
     }
   }
+
+    async componentDidMount(){
+      let url = `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=bde8a8ffde4344bebe7af05b2fb00071&page=${this.state.page}&pageSize=5`;
+      console.log("awAIT1");
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      this.setState  ({
+        articles : parsedData.articles,
+        page : this.state.page
+      })
+
+
+    }
+
+     Previous = async () =>{
+      let url = `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=bde8a8ffde4344bebe7af05b2fb00071&page=${this.state.page-1}&pageSize=5`;
+      console.log("awAIT1");
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      this.setState  ({
+        articles : parsedData.articles,
+        page : this.state.page - 1
+      })
+
+    }
+    Next = async () => {
+  //  this.setState({
+  //   page: this.state.page + 1
+  //  })
+  console.log(this.state.page)
+  let url = `https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=bde8a8ffde4344bebe7af05b2fb00071&page=${this.state.page + 1}&pageSize=5`;
+      console.log("awAIT1");
+      let data = await fetch(url);
+      let parsedData = await data.json();
+      this.setState  ({
+        articles : parsedData.articles,
+        page : this.state.page + 1
+      })
+
+
+    }
+  
   render() {
     return (
-      <div className='container'>
+       
+      <div className='container my-3'>
         <h2>Top Headlines</h2>
-        <div className="row">
-          <div className="col-md-3"> <Newsitem title="mytitle" description="mydesc" imgurl="https://talksport.com/football/1296836/man-uts-quiet-january-transfer-window-john-murtough"/></div>
-          <div className="col-md-3"> <Newsitem title="mytitle" description="mydesc"/></div>
-          <div className="col-md-3"> <Newsitem title="mytitle" description="mydesc"/></div>
+        {this.state.articles.map((elements)=>{
+        return ( <div className="container row align-items-start col" key={elements.url}>
+          
+         
+        <div className="col-md-3"> <Newsitem url={elements.url} imgurl={elements.urlToImage} title={elements.title.slice(0,30)} description={elements.description.slice(0,100)}/></div>
+     
+     
+      </div>)
+
+       })}
+       <div class="d-flex justify-content-between">
+       <button type="button" disabled={this.state.page<=1} class="btn btn-primary my-3" onClick={this.Previous}> &#8592; Previous</button>
+       <button type="button" disabled={this.state.page>=2} class="btn btn-primary my-3" onClick={this.Next}>Next &rarr;</button>
+       </div>
+
+
        
-       
-        </div>
       </div>
     )
   }
